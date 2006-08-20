@@ -1,20 +1,18 @@
-#!/bin/sh
-#""":"
-#exec python $0 ${1+"$@"}
-#"""
+# -*- coding: iso-8859-1 -*-
 
 #
-# DomainFinder 2.0
+# DomainFinder 2.0.2
 # (c) 1998-2001 by Konrad Hinsen
 #
 # For more information, see
 #         http://dirac.cnrs-orleans.fr/DomainFinder/
 #
-# Last revision: 2002-10-2
+# Last revision: 2005-5-2
 #
 
 from Tkinter import *
 from GUIUtility import *
+import tkFileDialog
 from Scientific.TkWidgets.TkPlotCanvas import PolyLine, PlotGraphics, \
                                               PlotCanvas
 from Scientific.TkWidgets.TkVisualizationCanvas import VisualizationCanvas, \
@@ -298,50 +296,76 @@ class GUI(Frame):
         self.ready_for_mode_analysis = 0
         self.ready_for_conformation_analysis = 0
         self.createMenu()
+        self.setBindings()
         self.createMain()
         self.switchMode()
         self.activateMenus()
+
+    def setBindings(self):
+        self.setShortcut('o', lambda s=self: self.loadConformation(0))
+        self.setShortcut('q', self.quit)
+
+    def setShortcut(self, key, function):
+        if mac_conventions:
+            key = '<Command-%s>' % key
+        else:
+            key = '<Control-%s>' % key
+        self.master.bind(key, lambda event, f=function: f())
 
     #
     # Set up the menus.
     #
     def createMenu(self):
-        menu_bar = Frame(self, relief=RAISED, bd=2)
-        menu_bar.pack(side=TOP, anchor=W, fill=X)
+        menu_bar = Menu(self)
         self.createFileMenu(menu_bar)
         self.createDeformationMenu(menu_bar)
         self.createDomainMenu(menu_bar)
         self.createHelpMenu(menu_bar)
+        self.master.config(menu=menu_bar)
 
     def createFileMenu(self, menu_bar):
-        menu_button = Menubutton(menu_bar, text='File', underline=0)
-        menu_button.pack(side=LEFT)
-        menu = Menu(menu_button)
+        if mac_conventions:
+            command_key = 'Command-'
+        else:
+            command_key = 'Ctrl-'
+        menu = Menu(menu_bar, tearoff=0)
+        # entry 0
         menu.add_command(label='Load reference conformation...',
                          command=lambda object=self:
-                         object.loadConformation(0))
+                         object.loadConformation(0),
+                         accelerator=command_key+'O')
+        # entry 1
         menu.add_command(label='Load comparison conformation...',
                          command=lambda object=self:
                          object.loadConformation(1))
+        # entry 2
         menu.add_separator()
+        # entry 3
         menu.add_command(label='Load modes...', command=self.loadModes)
+        # entry 4
         menu.add_command(label='Save modes...', command=self.saveModes)
+        # entry 5
         menu.add_separator()
+        # entry 6
         menu.add_command(label='Show both conformations',
                          command = self.showCorrespondence)
+        # entry 7
         menu.add_command(label='Show filter effect',
                          command = self.showFilter)
+        # entry 8
         menu.add_command(label='RMS distances', command=self.displayRMS)
+        # entry 9
         menu.add_command(label='Transition path', command=self.transitionPath)
+        # entry 10
         menu.add_separator()
-        menu.add_command(label='Quit', command=self.quit)
-        menu_button['menu'] = menu
+        # entry 11
+        menu.add_command(label='Quit', command=self.quit,
+                         accelerator=command_key+'Q')
+        menu_bar.add_cascade(label='File', menu=menu)
         self.file_menu = menu
 
     def createDeformationMenu(self, menu_bar):
-        menu_button = Menubutton(menu_bar, text='Deformation', underline=0)
-        menu_button.pack(side=LEFT)
-        menu = Menu(menu_button)
+        menu = Menu(menu_bar, tearoff=0)
         menu.add_command(label='Show deformation',
                          command=self.showDeformation)
         menu.add_separator()
@@ -349,13 +373,11 @@ class GUI(Frame):
                          command=self.writeDeformationPDB)
         menu.add_command(label='Write VRML file...',
                          command=self.writeDeformationVRML)
-        menu_button['menu'] = menu
+        menu_bar.add_cascade(label='Deformation', menu=menu)
         self.deformation_menu = menu
 
     def createDomainMenu(self, menu_bar):
-        menu_button = Menubutton(menu_bar, text='Domains', underline=1)
-        menu_button.pack(side=LEFT)
-        menu = Menu(menu_button)
+        menu = Menu(menu_bar, tearoff=0)
         menu.add_command(label='Show domains', command=self.listDomains)
         menu.add_separator()
         menu.add_command(label='Write domain list...',
@@ -367,15 +389,13 @@ class GUI(Frame):
         menu.add_separator()
         menu.add_command(label='Save in MMTK format...',
                          command=self.saveDomains)
-        menu_button['menu'] = menu
+        menu_bar.add_cascade(label='Domains', menu=menu)
         self.domain_menu = menu
 
     def createHelpMenu(self, menu_bar):
-        menu_button = Menubutton(menu_bar, text='Help', underline=0)
-        menu_button.pack(side=RIGHT)
-        menu = Menu(menu_button)
+        menu = Menu(menu_bar, tearoff=0)
         menu.add_command(label='About DomainFinder', command=self.about)
-        menu_button['menu'] = menu
+        menu_bar.add_cascade(label='Help', menu=menu)
         self.help_menu = menu
 
     #
@@ -384,40 +404,49 @@ class GUI(Frame):
     def activateMenus(self):
         if self.mode.get() == 'modes':
             ready = self.ready_for_mode_analysis
-            self.file_menu.entryconfig(2, state=DISABLED)
-            self.file_menu.entryconfig(7, state=DISABLED)
-            self.file_menu.entryconfig(8, state=DISABLED)
-            self.file_menu.entryconfig(9, state=DISABLED)
-            self.file_menu.entryconfig(10, state=DISABLED)
-            self.file_menu.entryconfig(4, state=NORMAL)
-            if ready:
-                self.file_menu.entryconfig(5, state=NORMAL)
-            else:
-                self.file_menu.entryconfig(5, state=DISABLED)
-        else:
-            ready = self.ready_for_conformation_analysis
-            if self.pdbfile.get():
-                self.file_menu.entryconfig(2, state=NORMAL)
-            else:
-                self.file_menu.entryconfig(2, state=DISABLED)
-            if ready:
-                self.file_menu.entryconfig(7, state=NORMAL)
-                self.file_menu.entryconfig(8, state=NORMAL)
-                self.file_menu.entryconfig(9, state=NORMAL)
-                self.file_menu.entryconfig(10, state=NORMAL)
-            else:
+            try: # this is for TclTkAqua, which doesn't understand "state"
+                self.file_menu.entryconfig(1, state=DISABLED)
+                self.file_menu.entryconfig(6, state=DISABLED)
                 self.file_menu.entryconfig(7, state=DISABLED)
                 self.file_menu.entryconfig(8, state=DISABLED)
                 self.file_menu.entryconfig(9, state=DISABLED)
-                self.file_menu.entryconfig(10, state=DISABLED)
-            self.file_menu.entryconfig(4, state=DISABLED)
-            self.file_menu.entryconfig(5, state=DISABLED)
-        if ready:
-            self.deformation_menu.master.configure(state=NORMAL)
-            self.domain_menu.master.configure(state=NORMAL)
+                self.file_menu.entryconfig(3, state=NORMAL)
+                if ready:
+                    self.file_menu.entryconfig(4, state=NORMAL)
+                else:
+                    self.file_menu.entryconfig(4, state=DISABLED)
+            except SyntaxError:
+                pass
         else:
-            self.deformation_menu.master.configure(state=DISABLED)
-            self.domain_menu.master.configure(state=DISABLED)
+            ready = self.ready_for_conformation_analysis
+            try:
+                if self.pdbfile.get():
+                    self.file_menu.entryconfig(1, state=NORMAL)
+                else:
+                    self.file_menu.entryconfig(1, state=DISABLED)
+                if ready:
+                    self.file_menu.entryconfig(6, state=NORMAL)
+                    self.file_menu.entryconfig(7, state=NORMAL)
+                    self.file_menu.entryconfig(8, state=NORMAL)
+                    self.file_menu.entryconfig(9, state=NORMAL)
+                else:
+                    self.file_menu.entryconfig(6, state=DISABLED)
+                    self.file_menu.entryconfig(7, state=DISABLED)
+                    self.file_menu.entryconfig(8, state=DISABLED)
+                    self.file_menu.entryconfig(9, state=DISABLED)
+                self.file_menu.entryconfig(3, state=DISABLED)
+                self.file_menu.entryconfig(4, state=DISABLED)
+            except TclError:
+                pass
+        try:
+            if ready:
+                self.deformation_menu.master.configure(state=NORMAL)
+                self.domain_menu.master.configure(state=NORMAL)
+            else:
+                self.deformation_menu.master.configure(state=DISABLED)
+                self.domain_menu.master.configure(state=DISABLED)
+        except TclError:
+            pass
 
     #
     # Construct the main window.
@@ -502,6 +531,7 @@ class GUI(Frame):
         self.filter.set(self.data.filter)
 
     def switchMode(self):
+        pass
         if self.mode.get() == 'modes':
             self.modes_box.pack(side=TOP, fill=BOTH, expand=YES)
             self.conf_box.forget()
@@ -533,8 +563,11 @@ class GUI(Frame):
     #
     def loadConformation(self, which, filename = None):
         if filename is None:
-            fd = FileDialog.LoadFileDialog(self)
-            filename = fd.go(key='LoadConformation', pattern='*.pdb*')
+            open = tkFileDialog.Open(self,
+                                     filetypes=[("PDB files", "*.pdb*"),
+                                                 ("All files", "*")],
+                                     title = "Choose PDB file")
+            filename = open.show()
             if not filename:
                 return
         self.status.set('Loading conformation.')
@@ -596,8 +629,11 @@ class GUI(Frame):
 
     def loadModes(self, filename = None):
         if filename is None:
-            fd = FileDialog.LoadFileDialog(self)
-            filename = fd.go(key='LoadModes', pattern='*.modes')
+            open = tkFileDialog.Open(self,
+                                     filetypes=[("Modes files", "*.modes"),
+                                                 ("All files", "*")],
+                                     title = "Choose modes file")
+            filename = open.show()
             if not filename:
                 return
         self.status.set('Loading modes.')
@@ -628,8 +664,10 @@ class GUI(Frame):
 
     def saveModes(self, filename = None):
         if filename is None:
-            fd = FileDialog.SaveFileDialog(self)
-            filename = fd.go(key='SaveModes', pattern='*.modes')
+            open = tkFileDialog.SaveAs(filetypes=[("Mode files", "*.modes"),
+                                                  ("All files", "*")],
+                                       title = "Write modes file")
+            filename = open.show()
             if not filename:
                 return
         self.status.set('Saving modes.')
@@ -695,8 +733,10 @@ class GUI(Frame):
 
     def transitionPath(self):
         import tempfile
-        fd = FileDialog.SaveFileDialog(self)
-        filename = fd.go(key='TransitionPath', pattern='*.nc')
+        open = tkFileDialog.SaveAs(filetypes=[("netCDF files", "*.nc"),
+                                              ("All files", "*")],
+                                   title = "Write transition trajectory")
+        filename = open.show()
         if not filename:
             return
         pdb1 = tempfile.mktemp('.pdb')
@@ -757,8 +797,10 @@ class GUI(Frame):
     def writeDeformationPDB(self):
         try:
             self.prepareDeformation()
-            fd = FileDialog.SaveFileDialog(self)
-            filename = fd.go(key='SaveDeformationPDB', pattern='*.pdb*')
+            open = tkFileDialog.SaveAs(filetypes=[("PDB files", "*.pdb*"),
+                                                  ("All files", "*")],
+                                       title = "Write deformation PDB file")
+            filename = open.show()
             if filename:
                 self.status.set('Writing PDB file.')
                 self.data.universe.writeToFile(filename, None, 'pdb')
@@ -769,8 +811,10 @@ class GUI(Frame):
     def writeDeformationVRML(self):
         try:
             self.prepareDeformation()
-            fd = FileDialog.SaveFileDialog(self)
-            filename = fd.go(key='SaveDeformationVRML', pattern='*.wrl*')
+            open = tkFileDialog.SaveAs(filetypes=[("VRML files", "*.wrl*"),
+                                                  ("All files", "*")],
+                                       title = "Write deformation VRML file")
+            filename = open.show()
             if filename:
                 self.data.universe.writeToFile(filename, None,
                                                'vrml.wireframe')
@@ -819,8 +863,10 @@ class GUI(Frame):
     def writeDomainList(self):
         from Scientific.IO.TextFile import TextFile
         try:
-            fd = FileDialog.SaveFileDialog(self)
-            filename = fd.go(key='WriteDomainList', pattern='*.txt')
+            open = tkFileDialog.SaveAs(filetypes=[("Text files", "*.txt"),
+                                                  ("All files", "*")],
+                                       title = "Write domain list")
+            filename = open.show()
             if filename:
                 domains, colors = self.getDomainsAndColors()
                 file = TextFile(filename, 'w')
@@ -843,8 +889,10 @@ class GUI(Frame):
         try:
             self.prepareDeformation()
             self.prepareDomains()
-            fd = FileDialog.SaveFileDialog(self)
-            filename = fd.go(key='SaveDomainsPDB', pattern='*.pdb*')
+            open = tkFileDialog.SaveAs(filetypes=[("PDB files", "*.pdb*"),
+                                                  ("All files", "*")],
+                                       title = "Write domain PDB file")
+            filename = open.show()
             if filename:
                 self.status.set('Writing PDB file.')
                 self.data.universe.writeToFile(filename, None, 'pdb')
@@ -855,8 +903,10 @@ class GUI(Frame):
     def writeDomainsVRML(self):
         try:
             self.prepareDomains()
-            fd = FileDialog.SaveFileDialog(self)
-            filename = fd.go(key='SaveDomainsVRML', pattern='*.wrl*')
+            open = tkFileDialog.SaveAs(filetypes=[("VRML files", "*.wrl*"),
+                                                  ("All files", "*")],
+                                       title = "Write domain VRML file")
+            filename = open.show()
             if filename:
                 self.status.set('Writing VRML file.')
                 self.data.universe.writeToFile(filename,None,'vrml.wireframe')
@@ -867,8 +917,10 @@ class GUI(Frame):
     def saveDomains(self):
         try:
             domains, rigid_regions, rbdata = self.findDomains()
-            fd = FileDialog.SaveFileDialog(self)
-            filename = fd.go(key='SaveDomainsMMTK', pattern='*.domains')
+            open = tkFileDialog.SaveAs(filetypes=[("Domain files", "*.domains"),
+                                                  ("All files", "*")],
+                                       title = "Write domain file (MMTK format)")
+            filename = open.show()
             if filename:
                 self.status.set('Saving domains.')
                 import MMTK
@@ -962,14 +1014,14 @@ class GUI(Frame):
         window.title('About DomainFinder')
         text = 'DomainFinder 2.0\n' + \
                '\n' + \
-               '(c) 1998-2001 by Konrad Hinsen\n' + \
+               '(c) 1998-2005 by Konrad Hinsen\n' + \
                '\n' + \
-               'Centre de Biophysique Moléculaire (CNRS)\n' + \
-               'Rue Charles Sadron\n' + \
-               '45071 Orléans Cedex 2\n' + \
+               'Laboratoire Léon Brillouin (CEA-CNRS)\n' + \
+               'CEA Saclay\n' + \
+               '91191 Gif sur Yvette Cedex\n' + \
                'France\n' + \
                '\n' + \
-               'E-Mail: hinsen@cnrs-orleans.fr\n' + \
+               'E-Mail: khinsen@cea.fr\n' + \
                '\n' + \
                'http://dirac.cnrs-orleans.fr/DomainFinder/'
         Label(window, text=text).pack(side=TOP)
@@ -1193,9 +1245,35 @@ def rgbcolor(color):
 # And finally: the main program...
 #
 def run(filename1 = None, filename2 = None):
-    app = DomainFinder(None)
+
+    global mac_conventions
+    
+    root = Tk()
+    try:
+        root.tk.call('console','hide')
+    except TclError:
+        pass
+    
+    if sys.platform == 'darwin':
+        mac_conventions = 'X11' not in root.winfo_server()
+        if 0:
+            # Unfortunately the Scale widget doesn't work with tile enabled.
+            # Perhaps this will be fixed, until then we have to live with
+            # standard Tk look.
+            try:
+                root.tk.call('package', 'require', 'tile')
+                root.tk.call('namespace', 'import', '-force', 'ttk::*')
+                root.tk.call('tile::setTheme', 'aqua')
+            except TclError:
+                pass
+    else:
+        mac_conventions = 0
+    
+    root.title('DomainFinder 2.0')
+    root.resizable(width=NO,height=NO)
+    app = DomainFinder(root)
     app.pack(side=TOP, anchor=W, fill=BOTH, expand=YES)
-    app.master.title('DomainFinder 2.0')
+
     if filename1:
         app.loadConformation(0, filename1)
     if filename2:
