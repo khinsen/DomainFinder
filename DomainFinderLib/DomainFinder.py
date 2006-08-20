@@ -1012,7 +1012,7 @@ class GUI(Frame):
     def about(self):
         window = Toplevel(self)
         window.title('About DomainFinder')
-        text = 'DomainFinder 2.0\n' + \
+        text = 'DomainFinder 2.0.2\n' + \
                '\n' + \
                '(c) 1998-2005 by Konrad Hinsen\n' + \
                '\n' + \
@@ -1269,7 +1269,7 @@ def run(filename1 = None, filename2 = None):
     else:
         mac_conventions = 0
     
-    root.title('DomainFinder 2.0')
+    root.title('DomainFinder 2.0.2')
     root.resizable(width=NO,height=NO)
     app = DomainFinder(root)
     app.pack(side=TOP, anchor=W, fill=BOTH, expand=YES)

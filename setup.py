@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup (name = "DomainFinder",
-       version = "2.0",
+       version = "2.0.2",
        description = "Domain motion analysis for proteins",
        long_description =
 """DomainFinder is an interactive program for the determination and
