@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <TITLE>DomainFinder User's Manual: Theoretical basis</TITLE>
+ <LINK HREF="DomainFinder-3.html" REL=next>
+ <LINK HREF="DomainFinder-1.html" REL=previous>
+ <LINK HREF="DomainFinder.html#toc2" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="DomainFinder-3.html">Next</A>
+<A HREF="DomainFinder-1.html">Previous</A>
+<A HREF="DomainFinder.html#toc2">Contents</A>
+<HR>
+<H2><A NAME="theory"></A> <A NAME="s2">2. Theoretical basis</A></H2>
+
+<P>A detailed description of the theoretical methods used in DomainFinder
+can be found in Ref. 
+<A HREF="DomainFinder-9.html#domain-paper">1</A>. This
+section provides a brief summary that everyone should read before
+using DomainFinder.
+<P>
+<P>Since dynamical domains are by definition large regions in a protein,
+DomainFinder does not look at all atoms, but only at the C-alpha
+atoms, which define the backbone. Specifically, DomainFinder looks at
+<EM>changes</EM> in the relative positions of C-alpha atoms; these changes
+describe the deformation of the protein while it undergoes a specific
+motion. To characterize the deformation of each part of the protein,
+DomainFinder calculates a deformation energy for each atom, which
+depends on the changes in the distance of this atom from each of its
+close neighbors. A low deformation energy indicates relatively rigid
+regions, which are candidates for dynamical domains, whereas high
+deformation energies indicate flexible regions. Dynamical domains are
+identified by grouping the rigid regions according to their overall
+motion; a dynamical domain is thus by definition a sufficiently rigid
+region whose parts move in a sufficiently similar way. This procedure
+requires two input parameters that the user must provide: a
+deformation threshold, up to which a region is considered sufficiently
+rigid, and a similarity threshold, up to which the motion of
+subregions is considered sufficiently similar.
+<P>
+<P>In order to analyze protein motions, DomainFinder needs some input
+data describing them. One possibility is the use of two different
+conformations; the difference between these conformations describes
+one possible motion. Typically these conformations are obtained
+experimentally (by crystallography or NMR), and differ by the presence
+or absence of certain ligands. This mode of operation amounts to an
+analysis of experimental data.
+<P>
+<P>However, there are only few proteins for which two substantially
+different conformations are known experimentally. DomainFinder can
+also use calculational methods to obtain the necessary information
+about domain motions, using only a single conformation as input. The
+technique used by DomainFinder is a variant of <EM>normal mode
+analysis</EM> which has been optimized for the purpose of domain motion
+study. It is described in detail in Ref. 
+<A HREF="DomainFinder-9.html#mode-paper">2</A>. Even if multiple experimental structures are available, the
+normal mode approach is in general preferable, because it yields
+clearer domain delimitations and more detail. This is not surprising,
+since two conformations necessarily contain only a small subset of the
+full protein dynamics.
+<P>
+<P>
+<HR>
+<A HREF="DomainFinder-3.html">Next</A>
+<A HREF="DomainFinder-1.html">Previous</A>
+<A HREF="DomainFinder.html#toc2">Contents</A>
+</BODY>
+</HTML>

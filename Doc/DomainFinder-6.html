@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <TITLE>DomainFinder User's Manual: Deformation analysis</TITLE>
+ <LINK HREF="DomainFinder-7.html" REL=next>
+ <LINK HREF="DomainFinder-5.html" REL=previous>
+ <LINK HREF="DomainFinder.html#toc6" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="DomainFinder-7.html">Next</A>
+<A HREF="DomainFinder-5.html">Previous</A>
+<A HREF="DomainFinder.html#toc6">Contents</A>
+<HR>
+<H2><A NAME="deformation"></A> <A NAME="s6">6. Deformation analysis</A></H2>
+
+<P>Much information about the slow motions of a protein can be obtained
+by looking at the deformation energies for each atom. The entry ``Show
+deformation'' in the Deformation menu shows the reference conformation
+with a color code representing the deformation energies. Blue atoms
+correspond to small deformation energies, green atoms are close to the
+deformation threshold, and red atoms are in particularly flexible
+regions of the protein. Blue and green atoms are thus below the
+deformation threshold and candidates for domains in a subsequent
+domain analysis; if you find that most of your atoms are yellow or
+red, you should increase the deformation threshold before starting the
+domain analysis. However, you should also consider the possibility
+that your protein has no domains, either because it is too flexible to
+allow a description of its slow motions by quasi-rigid substructures,
+or because the deformation associated with these motions is uniformly
+distributed over the whole protein.
+<P>
+<P>Although the energy scale for the deformation energies is arbitrary
+(see Ref. 
+<A HREF="DomainFinder-9.html#domain-paper">1</A> for a detailed discussion), it is
+nevertheless an absolute scale independent of the specific
+protein. This means that deformation energy values can be compared
+between proteins and, in the case of a normal mode based analysis,
+between modes. If a certain protein requires a higher deformation
+threshold than another protein for a useful domain decomposition, this
+indicates that the first protein has a higher overall flexibility and
+less rigid domains. A domain decomposition should therefore never be
+published without quoting the deformation threshold used for it.
+<P>
+<P>For a more detailed visualization, the deformation energy information
+can be exported in two formats. Using the Deformation menu entry
+``Write VRML file...'', you can write a VRML version of DomainFinder's
+deformation visualization. With the menu entry ``Write PDB file...''
+you can produce a PDB file which contains the deformation energy
+values coded in the temperature factor field for each atom.  A
+temperature factor of 99 indicates atoms whose deformation energy
+exceeds twice the deformation threshold; values between zero and 79.2
+correspond linearly to deformation energies between zero and twice the
+deformation threshold.
+<P>
+<P>
+<HR>
+<A HREF="DomainFinder-7.html">Next</A>
+<A HREF="DomainFinder-5.html">Previous</A>
+<A HREF="DomainFinder.html#toc6">Contents</A>
+</BODY>
+</HTML>

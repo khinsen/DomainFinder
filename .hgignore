@@ -1,0 +1,10 @@
+syntax: glob
+
+*~
+**.pyc
+**.pyo
+build
+dist
+Test
+MANIFEST
+1

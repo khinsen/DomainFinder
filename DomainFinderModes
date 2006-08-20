@@ -1,0 +1,117 @@
+#!python
+
+#
+# This program calculates normal modes of a protein and saves
+# them in the format used by DomainFinder.
+#
+# Written by Konrad Hinsen
+# Last revision: 2001-9-5
+#
+
+from MMTK import *
+from MMTK.Proteins import Protein, PeptideChain
+from MMTK.PDB import PDBConfiguration
+from MMTK.ForceFields import DeformationForceField
+from MMTK.FourierBasis import FourierBasis, countBasisVectors
+from MMTK.NormalModes import NormalModes, SparseMatrixSubspaceNormalModes
+import Numeric; N = Numeric
+import operator, os, string, sys
+
+nlimit = 600
+
+if len(sys.argv) < 2:
+    print "Usage: %s <PDB file> [<Mode file> [<number of modes>]]" % sys.argv[0]
+    sys.exit(0)
+
+pdbfile = sys.argv[1]
+if len(sys.argv) > 2:
+    modefile = sys.argv[2]
+else:
+    modefile, extension = os.path.splitext(pdbfile)
+    if extension == '.gz' or extension == '.Z':
+	modefile, extension = os.path.splitext(modefile)
+    modefile = modefile + '.modes'
+
+if len(sys.argv) > 3:
+    nsave = string.atoi(sys.argv[3])
+else:
+    nsave = 50
+
+if len(sys.argv) > 4:
+    nmodes = string.atoi(sys.argv[4])
+else:
+    nmodes = None
+
+universe = InfiniteUniverse(DeformationForceField())
+sequence = PDBConfiguration(pdbfile).peptide_chains
+chains = []
+for chain in sequence:
+    model = PeptideChain(chain, model='calpha')
+    for i in range(len(chain)):
+        model[i].name = string.capwords(chain[i].name) + \
+                        `chain[i].number`
+        model[i].number = chain[i].number
+    chains.append(model)
+universe.protein = Protein(chains)
+
+natoms = universe.numberOfCartesianCoordinates()
+
+if natoms <= nlimit and (nmodes is None or nmodes >= nlimit):
+
+    cutoff = None
+    nmodes = 3*natoms
+    modes = NormalModes(universe)
+
+else:
+
+    p1, p2 = universe.boundingBox()
+    cutoff_max = (p2-p1).length()
+    cutoff = 0.5*cutoff_max
+    if nmodes is not None:
+        nmodes_opt = nmodes
+        nmodes = countBasisVectors(universe, cutoff)
+        while nmodes > nmodes_opt:
+            cutoff = cutoff + 0.1
+            if cutoff > cutoff_max:
+                cutoff = cutoff_max
+                break
+            nmodes = countBasisVectors(universe, cutoff)
+        while nmodes < nmodes_opt:
+            cutoff = cutoff - 0.1
+            if cutoff < 0.1:
+                cutoff = 0.1
+                break
+            nmodes = countBasisVectors(universe, cutoff)
+    else:
+        nmodes_max = min(natoms, 3*nlimit*nlimit/natoms)
+        while 1:
+            nmodes = countBasisVectors(universe, cutoff)
+            if nmodes == nmodes_max: break
+            if nmodes > nmodes_max:
+                cutoff = cutoff + 0.1
+                if cutoff > cutoff_max:
+                    cutoff = cutoff_max
+                    break
+            elif nmodes < (2*nmodes_max)/3:
+                cutoff = cutoff - 0.1
+                if cutoff < 0.1:
+                    cutoff = 0.1
+                    break
+            else:
+                break
+
+    cutoff = cutoff
+    nmodes = nmodes
+
+    basis = FourierBasis(universe, cutoff)
+    basis.may_modify = 1
+    modes = SparseMatrixSubspaceNormalModes(universe, basis)
+
+if len(modes) > nsave:
+    modes.reduceToRange(0, nsave)
+
+modes.cutoff = cutoff
+modes.calculated = nmodes
+modes.conformation = pdbfile
+
+save(modes, modefile)

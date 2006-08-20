@@ -1,0 +1,10 @@
+#!python
+
+from DomainFinderLib.DomainFinder import run
+import sys
+if len(sys.argv) == 3:
+    run(sys.argv[1], sys.argv[2])
+elif len(sys.argv) == 2:
+    run(sys.argv[1])
+else:
+    run()

@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <TITLE>DomainFinder User's Manual: Domain analysis</TITLE>
+ <LINK HREF="DomainFinder-8.html" REL=next>
+ <LINK HREF="DomainFinder-6.html" REL=previous>
+ <LINK HREF="DomainFinder.html#toc7" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="DomainFinder-8.html">Next</A>
+<A HREF="DomainFinder-6.html">Previous</A>
+<A HREF="DomainFinder.html#toc7">Contents</A>
+<HR>
+<H2><A NAME="domains"></A> <A NAME="s7">7. Domain analysis</A></H2>
+
+<P>The goal of a domain analysis is a decomposition of the protein into
+regions with distinct dynamical properties. The kinds of regions that
+can be distinguished depend on the domain decomposition approach that
+is used; in general, the outcome of two domain decompositions using
+different approaches will not only be different, but not even directly
+comparable. It is thus important to understand the capabilities and
+limitations of each approach.
+<P>
+<P>The techniques implemented in DomainFinder allow an identification
+of three types of regions in a protein:
+<UL>
+<LI> Flexible regions, for which a description of the motion by
+rigid bodies is not useful. These regions are recognized
+during deformation analysis (see section 
+<A HREF="DomainFinder-6.html#deformation">6</A>) and not used at all during domain analysis.</LI>
+<LI> Rigid regions with uniform motion. These regions are
+recognized as rigid during deformation analysis; domain
+analysis then groups them together according to the
+similarity of their overall motion. However, these regions
+are <EM>not</EM> rigid bodies in any strict sense; they do
+show internal deformations, but these deformations do
+not destroy the uniformity of the overall motion.
+The term ``dynamical domain'' is best interpreted to
+describe these rigid regions only.</LI>
+<LI> Intermediate regions, whose internal deformation is
+sufficiently small everywhere, but systematic enough that
+over the size of the region it adds up to produce
+sufficiently different overall motion between extremal
+parts of the region. Such intermediate regions often
+occur in between dynamical domains.</LI>
+</UL>
+
+Examples for all three types are shown in Ref. 
+<A HREF="DomainFinder-9.html#domain-paper">1</A>.
+<P>
+<P>The central parameter which allows a distinction between rigid and
+intermediate regions is the ``domain coarseness'' parameter.  It
+specifies how similar the global motions in a region must be to be
+considered similar enough to form a domain (see Ref. 
+<A HREF="DomainFinder-9.html#domain-paper">1</A> for details). However, this parameter does not have
+one specific ``best'' value which one should find in order to obtain
+the ``right'' domain decomposition. It is a parameter which should be
+varied, and the ensemble of results for several values of this
+parameter provides the information for identifying domains and
+intermediate regions.
+<P>
+<P>In order to obtain the motion parameters necessary for the domain
+analysis, DomainFinder first divides the protein into small cubic
+regions containing on average six residues. For each cube, six motion
+parameters are calculated, three for translation and three for
+rotation. In case of a normal mode based analysis, there are six
+parameters <EM>per mode</EM>; this is one reason why a normal mode based
+analysis usually gives better results. The cubes are then grouped into
+domains according to the similarity of their motion parameters.  For a
+single value of the domain coarseness, it is not possible to
+distinguish between rigid and intermediate regions; the word
+``domain'' therefore refers to both type of regions in the program.
+<P>
+<P>After choosing a value for the domain coarseness, select ``Show
+domains'' from the Domains menu. This causes a window to be opened
+which shows the domain decomposition for this coarseness level. In the
+top left, the protein structure is drawn with various regions
+indicated by colors. The list to the right of the structure display
+contains all these regions with their color and size. The order in the
+list is significant; the best-defined domains are listed first, and
+the last item(s) frequently contain cubes that do not really belong to
+any recognizable domain. The bottom picture shows a parallel-axis plot
+of the motion parameters for all cubes, color-coded by domain. In this
+plot, each line represents one cube, and each vertical axis one motion
+parameter. For well-defined domains, the lines belonging to the same
+domain (i.e. same color) should be very close, whereas lines belonging
+to different domains should be clearly separated. A wide band of lines
+indicates an intermediate region. The plot provides both a
+verification of the domain decomposition and a first impression of the
+nature of the domains. However, it should be interpreted with caution;
+the eye tends to consider two lines with small differences in all axes
+more similar than two lines which coincide in some axes but differ
+significantly in others, although from a mathematical point of view
+both situations are equivalent.
+<P>
+<P>It should be noted that the residues shown in black do not belong
+to any domain, for one of the following reasons:
+<UL>
+<LI> they are part of a cube with less than three points, which
+is too small to permit the calculation of the motion parameters</LI>
+<LI> they are in a cube whose average deformation energy is higher
+than the deformation threshold</LI>
+</UL>
+
+The precision of the domain definitions is thus not one residue, but
+one cube. In practice this is of little importance, because dynamical
+domains are by definition big regions, certainly larger than a cube of
+six residues on average. However, this effect should be kept in mind,
+since it explains some features of the domain analysis that are at
+first surprising, e.g. the lack of a perfect symmetry in agreement
+with the symmetry of the molecule, or a slight dependence of the
+domains on the orientation of the input structures.
+<P>
+<P>For more detailed information on a particular domain, click on that
+domain's entry in the domain list. This will open another window with
+information for this domain only. In the top left there is again the
+protein structure with just one domain highlighted.  To its right, a
+list of all residues in the domain is shown.  Below there is a
+parallel-axis plot showing only the cubes in this domain. Finally,
+there is an indication of the numerical similarity of the motion
+parameters within the domain. Two numerical similarity values are
+given, of which the first (larger) one is the similarity of the two
+most similar cubes, and the second (smaller) one is the similarity
+between this pair and the most different cube. The ratio between these
+two number is the domain coarseness which is necessary to consider the
+whole region as one domain. The small plot at the bottom shows one
+line per cube at the coarseness level required to keep that cube in
+the domain. You can use it to estimate the influence of a small change
+of coarseness on this domain: if there are many lines close to the
+current coarseness limit, the domain is likely to change
+significantly. Inversely, if the highest coarseness in the domain is
+clearly smaller than the current limit, a small variation will have no
+influence on the domain.
+<P>
+<P>When you vary the domain coarseness limit, you will observe that some
+domains remain essentially the same, growing or shrinking only by
+small amounts and in response to significant coarseness variations,
+whereas others grow and shrink rapidly, or tend to break up into
+smaller parts as the coarseness limit is decreased. The first kind
+represents stable rigid regions, i.e. dynamical domains. The second
+kind represents intermediate regions. The parallel-axis plot at the
+bottom of the window helps in this classification by showing the
+variation of motion parameters within the domains at one glance.
+<P>
+<P>Finally, DomainFinder lets you export the domain analysis results for
+visualization and further computational analysis by using the
+remaining entries in the Domains menu. ``Write domain list...''
+writes a complete list of the domains and their residues to a text
+file. ``Write PDB file...'' creates a PDB file of the protein
+structure with the domain numbers coded in the ``occupancy'' field. A
+value of zero indicates a residue outside any domain, other values
+refer to the order of the domains in the domain list. ``Write VRML
+file...''  provides a VRML version of the color-coded structure in the
+domain window. ``Save in MMTK format...'' saves a Python dictionary in
+the object format used by the Molecular Modeling Toolkit; this
+dictionary contains entries for all variables of interest. The file
+can be loaded with the MMTK function <CODE>load()</CODE>.
+<P>
+<P>
+<HR>
+<A HREF="DomainFinder-8.html">Next</A>
+<A HREF="DomainFinder-6.html">Previous</A>
+<A HREF="DomainFinder.html#toc7">Contents</A>
+</BODY>
+</HTML>

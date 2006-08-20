@@ -1,0 +1,99 @@
+This is version 1.1 of DomainFinder, an interactive program for the
+determination and characterization of dynamical domains in proteins.
+This program is copyrighted but free to use for anyone under the
+GNU Public License, see the file LICENSE for details.
+
+DomainFinder should work with all major variants of Unix. There is no
+system-specific code in DomainFinder itself, so porting DomainFinder
+to non-Unix systems should be easy. However, I cannot provide
+any support for this.
+
+If you have any questions about DomainFinder that are not answered
+on the Web page mentioned above, please contact the author.
+
+For the legal aspects of the code in this package, see the file LEGAL.
+
+
+
+Konrad Hinsen
+Centre de Biophysique Moleculaire (CNRS)
+Rue Charles Sadron
+45071 Orleans Cedex 2
+France
+
+E-Mail: hinsen@cnrs-orleans.fr
+
+
+
+Installation
+============
+
+DomainFinder requires the Python interpreter (version 1.6 or higher)
+with the Tk interface installed, and the Molecular Modeling Toolkit
+(MMTK), version 2.2 or higher. Make sure that these components work
+properly before installing DomainFinder. The MMTK example scripts
+should work, as well as the Tkinter Demo programs from the Python
+distribution.
+
+Then type
+
+    python setup.py install
+
+On most systems this will require root permissions, as by default
+the files will be installed in the same directory as the Python
+interpreter. Other directories can be specified, type
+
+    python setup.py --help install
+
+for explanations. Once installation is finished, type
+
+    DomainFinder
+
+to run the program.
+
+When dealing with very large proteins, it can be of interest to
+perform the normal mode calculation on a faster machine or on a
+machine with more memory than the workstation used for visualization.
+Sometimes computers dedicated to number crunching applications do
+not provide a graphical user interface, and then the DomainFinder
+program cannot be run.
+
+A seperate program called DomainFinderModes is therefore provided
+to calculate the normal modes and save them to a file, which can
+then be transferred to the workstation and analyzed with DomainFinder.
+To execute this program, type
+
+   DomainFinderModes pdb-file mode-file modes-saved modes-calculated
+
+The first argument is the PDB file from which the protein conformation
+is read. The second argument is the name of the mode file to be
+created. The third argument indicates how many modes should be kept
+in the file, and the fourth argument specifies the number of modes
+to be calculated. See the DomainFinder manual for a discussion of
+the meaning of these parameters.
+
+
+Documentation
+=============
+
+The directory Doc contains the DomainFinder manual in three formats:
+HTML, PDF, and SGML/Linuxdoc.
+
+
+Visualization examples
+======================
+
+While the graphics displays in DomainFinder are sufficient for
+interactive analysis, it is often desirable to produce high-quality
+images for publications and presentations. These can be produced by
+saving modes and/or domains (in MMTK format) and using appropriate
+Python scripts (using MMTK) for visualization.
+
+Two example scripts can be found in the directory Visualization. The
+script vector_field.py visualizes atomic displacements in a given
+normal mode by arrows placed on a grid. The script visualization.py
+shows the domains by colors and their movements in a given mode by a
+scre-motion axis and an arrow. Both scripts require the molecule
+viewer VMD, which is available from http://www.ks.uiuc.edu/Research/vmd/.
+Using the rendering functions of VMD plus ray-tracing programs, very
+high quality pictures can be produced.
