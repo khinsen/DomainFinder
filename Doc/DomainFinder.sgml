@@ -6,7 +6,7 @@
 
 <title>DomainFinder User's Manual
 <author>Konrad Hinsen, <tt/hinsen@cnrs-orleans.fr/
-<date>v1.1, 2001-9-5
+<date>v2.0, 2005-5-12
 <abstract>
 DomainFinder is an interactive program for the determination and 
 characterization of dynamical domains in proteins. Its key features
@@ -109,7 +109,8 @@ about domain motions, using only a single conformation as input. The
 technique used by DomainFinder is a variant of <em/normal mode
 analysis/ which has been optimized for the purpose of domain motion
 study. It is described in detail in Ref. <ref id="mode-paper"
-name="2">. Even if multiple experimental structures are available, the
+name="2">, the updated form of the interactions used in DomainFinder 2.0 is
+described in Ref. <ref id="bm-paper" name="3"> Even if multiple experimental structures are available, the
 normal mode approach is in general preferable, because it yields
 clearer domain delimitations and more detail. This is not surprising,
 since two conformations necessarily contain only a small subset of the
@@ -534,10 +535,19 @@ DomainFinder in detail and discusses several applications.
 <item><label id="mode-paper">
 <p>
 <bf>``Analysis of domain motions by approximate normal mode calculations''
-by K. Hinsen (Proteins, Proteins 33, 417-429, 1998)</bf>
+by K. Hinsen (Proteins 33, 417-429, 1998)</bf>
 <p>
 This article describes the normal mode calculation technique that
 allows DomainFinder to treat even large proteins rapidly.
+
+<item><label id="bm-paper">
+<p>
+<bf>``Harmonicity in slow protein dynamics''
+by K. Hinsen, A.J. Petrescu, S. Dellerue, M.C. Bellissent-Funel,
+and G.R. Kneller  (Chem. Phys. 261, 25-37, 2000)</bf>
+<p>
+This article describes the improved protein model that is used
+in DomainFinder 2.0.
 
 </enum>
 
