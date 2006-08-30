@@ -1,4 +1,4 @@
-This is version 1.1 of DomainFinder, an interactive program for the
+This is version 2.0 of DomainFinder, an interactive program for the
 determination and characterization of dynamical domains in proteins.
 This program is copyrighted but free to use for anyone under the
 GNU Public License, see the file LICENSE for details.
@@ -17,9 +17,14 @@ For the legal aspects of the code in this package, see the file LEGAL.
 
 Konrad Hinsen
 Centre de Biophysique Moleculaire (CNRS)
-Rue Charles Sadron
-45071 Orleans Cedex 2
-France
+Orléans, France
+
+AND
+
+Synchrotron Soleil
+Division Expériences
+Saint Aubin - BP 48
+91192 Gif sur Yvette Cedex, France
 
 E-Mail: hinsen@cnrs-orleans.fr
 
@@ -76,8 +81,8 @@ the meaning of these parameters.
 Documentation
 =============
 
-The directory Doc contains the DomainFinder manual in three formats:
-HTML, PDF, and SGML/Linuxdoc.
+The directory Doc contains the DomainFinder manual in two formats:
+HTML and SGML/Linuxdoc.
 
 
 Visualization examples

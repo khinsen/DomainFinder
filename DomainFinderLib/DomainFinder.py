@@ -1015,14 +1015,17 @@ class GUI(Frame):
         window.title('About DomainFinder')
         text = ('DomainFinder %s\n' % __version__) + \
                '\n' + \
-               '(c) 1998-2005 by Konrad Hinsen\n' + \
+               '(c) 1998-2006 by Konrad Hinsen\n' + \
                '\n' + \
-               'Laboratoire Léon Brillouin (CEA-CNRS)\n' + \
-               'CEA Saclay\n' + \
-               '91191 Gif sur Yvette Cedex\n' + \
-               'France\n' + \
+               'Centre de Biophysique Moleculaire (CNRS)\n' + \
+               'Orleans, France\n' + \
                '\n' + \
-               'E-Mail: khinsen@cea.fr\n' + \
+               'and \n' + \
+               '\n' + \
+               'Synchrotron Soleil\n' + \
+               'Saint Aubin, France\n' + \
+               '\n' + \
+               'E-Mail: hinsen@cnrs-orleans.fr\n' + \
                '\n' + \
                'http://dirac.cnrs-orleans.fr/DomainFinder/'
         Label(window, text=text).pack(side=TOP)
