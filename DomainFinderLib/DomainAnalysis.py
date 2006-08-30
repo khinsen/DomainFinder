@@ -2,8 +2,10 @@ import MMTK
 import Numeric; N = Numeric
 import LinearAlgebra; LA = LinearAlgebra
 from Scientific.Geometry import Vector
-from Scientific.Geometry.TensorModule import delta, epsilon
-
+try: # Make this work with all recent versions of Scientific
+    from Scientific.Geometry import delta, epsilon
+except ImportError:
+    from Scientific.Geometry.TensorModule import delta, epsilon
 
 def rigidMovement(atoms, vector):
     a = N.zeros((len(atoms), 3, 2, 3), N.Float)
