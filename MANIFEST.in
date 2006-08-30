@@ -1,7 +1,6 @@
 include README LICENSE MANIFEST.in
 include DomainFinder DomainFinderModes TransitionPath
 include Doc/*.html
-include Doc/*.pdf
 include Doc/*.sgml
 include Visualization/*.py
 include Visualization/lyso.domains
