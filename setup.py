@@ -2,8 +2,13 @@
 
 from distutils.core import setup
 
+class Dummy:
+    pass
+pkginfo = Dummy()
+execfile('DomainFinderLib/__pkginfo__.py', pkginfo.__dict__)
+
 setup (name = "DomainFinder",
-       version = "2.0.2",
+       version = pkginfo.__version__,
        description = "Domain motion analysis for proteins",
        long_description =
 """DomainFinder is an interactive program for the determination and
@@ -21,7 +26,7 @@ are
        author = "Konrad Hinsen",
        author_email = "hinsen@cnrs-orleans.fr",
        url = "http://dirac.cnrs-orleans.fr/DomainFinder/",
-       licence = "GPL",
+       license = "GPL",
        packages = ['DomainFinderLib'],
        scripts = ['DomainFinder', 'DomainFinderModes', 'TransitionPath'],
        )

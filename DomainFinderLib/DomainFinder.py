@@ -1,7 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 
 #
-# DomainFinder 2.0.2
+# DomainFinder 2.0.x
 # (c) 1998-2001 by Konrad Hinsen
 #
 # For more information, see
@@ -21,6 +21,7 @@ from Scientific.TkWidgets.TkVisualizationCanvas import VisualizationCanvas, \
 from MMTK.Tk.ProteinVisualization import ProteinBackboneGraphics
 from Scientific.Visualization.Color import ColorByName, ColorScale
 from DataGraph import DataGraph
+from DomainFinderLib.__pkginfo__ import __version__
 import Numeric; N = Numeric
 import operator, os, string
 
@@ -1012,7 +1013,7 @@ class GUI(Frame):
     def about(self):
         window = Toplevel(self)
         window.title('About DomainFinder')
-        text = 'DomainFinder 2.0.2\n' + \
+        text = ('DomainFinder %s\n' % __version__) + \
                '\n' + \
                '(c) 1998-2005 by Konrad Hinsen\n' + \
                '\n' + \
@@ -1269,7 +1270,7 @@ def run(filename1 = None, filename2 = None):
     else:
         mac_conventions = 0
     
-    root.title('DomainFinder 2.0.2')
+    root.title('DomainFinder %s' % __version__)
     root.resizable(width=NO,height=NO)
     app = DomainFinder(root)
     app.pack(side=TOP, anchor=W, fill=BOTH, expand=YES)
