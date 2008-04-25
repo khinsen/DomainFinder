@@ -7,7 +7,7 @@
 # For more information, see
 #         http://dirac.cnrs-orleans.fr/DomainFinder/
 #
-# Last revision: 2005-5-2
+# Last revision: 2008-4-25
 #
 
 from Tkinter import *
@@ -22,7 +22,7 @@ from MMTK.Tk.ProteinVisualization import ProteinBackboneGraphics
 from Scientific.Visualization.Color import ColorByName, ColorScale
 from DataGraph import DataGraph
 from DomainFinderLib.__pkginfo__ import __version__
-import Numeric; N = Numeric
+from Scientific import N
 import operator, os, string
 
 #
@@ -772,7 +772,7 @@ class GUI(Frame):
                                 background='#BBB', relief=SUNKEN, border=2)
             canvas.pack(side=BOTTOM, fill=BOTH, expand=YES)
             bin_width = 0.5*(h[1][0]-h[0][0])
-            h2 = Numeric.repeat(h.array, len(h)*[2])
+            h2 = N.repeat(h.array, len(h)*[2])
             h2[::2, 0] = h[:, 0]-bin_width
             h2[1::2, 0] = h[:, 0]+bin_width
             lines = PolyLine(h2, color='red')

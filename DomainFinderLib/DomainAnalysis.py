@@ -1,6 +1,5 @@
 import MMTK
-import Numeric; N = Numeric
-import LinearAlgebra; LA = LinearAlgebra
+from Scientific import N, LA
 from Scientific.Geometry import Vector
 try: # Make this work with all recent versions of Scientific
     from Scientific.Geometry import delta, epsilon

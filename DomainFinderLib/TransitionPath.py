@@ -6,7 +6,7 @@ from MMTK.NormalModes import NormalModes, SparseMatrixSubspaceNormalModes
 from MMTK.FourierBasis import FourierBasis, countBasisVectors
 from MMTK.Random import uniform, gaussian, randomParticleVector
 from MMTK.Trajectory import Trajectory, SnapshotGenerator, TrajectoryOutput
-import Numeric; N = Numeric
+from Scientific import N
 import os, string
 from random import randrange
 

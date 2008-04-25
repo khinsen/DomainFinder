@@ -33,9 +33,9 @@ E-Mail: hinsen@cnrs-orleans.fr
 Installation
 ============
 
-DomainFinder requires the Python interpreter (version 1.6 or higher)
+DomainFinder requires the Python interpreter (version 2.3 or higher)
 with the Tk interface installed, and the Molecular Modeling Toolkit
-(MMTK), version 2.2 or higher. Make sure that these components work
+(MMTK), version 2.4 or higher. Make sure that these components work
 properly before installing DomainFinder. The MMTK example scripts
 should work, as well as the Tkinter Demo programs from the Python
 distribution.

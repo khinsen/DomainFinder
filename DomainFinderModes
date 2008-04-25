@@ -5,7 +5,7 @@
 # them in the format used by DomainFinder.
 #
 # Written by Konrad Hinsen
-# Last revision: 2001-9-5
+# Last revision: 2008-4-25
 #
 
 from MMTK import *
@@ -14,7 +14,7 @@ from MMTK.PDB import PDBConfiguration
 from MMTK.ForceFields import DeformationForceField
 from MMTK.FourierBasis import FourierBasis, countBasisVectors
 from MMTK.NormalModes import NormalModes, SparseMatrixSubspaceNormalModes
-import Numeric; N = Numeric
+from Scientific import N
 import operator, os, string, sys
 
 nlimit = 600
@@ -33,12 +33,12 @@ else:
     modefile = modefile + '.modes'
 
 if len(sys.argv) > 3:
-    nsave = string.atoi(sys.argv[3])
+    nsave = int(sys.argv[3])
 else:
     nsave = 50
 
 if len(sys.argv) > 4:
-    nmodes = string.atoi(sys.argv[4])
+    nmodes = int(sys.argv[4])
 else:
     nmodes = None
 
