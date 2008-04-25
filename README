@@ -1,7 +1,7 @@
-This is version 2.0 of DomainFinder, an interactive program for the
+This is version 2.0.4 of DomainFinder, an interactive program for the
 determination and characterization of dynamical domains in proteins.
 This program is copyrighted but free to use for anyone under the
-GNU Public License, see the file LICENSE for details.
+CeCILL-C License, see the file LICENSE for details.
 
 DomainFinder should work with all major variants of Unix. There is no
 system-specific code in DomainFinder itself, so porting DomainFinder
@@ -10,8 +10,6 @@ any support for this.
 
 If you have any questions about DomainFinder that are not answered
 on the Web page mentioned above, please contact the author.
-
-For the legal aspects of the code in this package, see the file LEGAL.
 
 
 
