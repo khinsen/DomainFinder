@@ -1,7 +1,7 @@
 #!python
 
 from DomainFinderLib.TransitionPath import run
-import string, sys
+import sys
 
 try:
     dummy, pdb1, pdb2, trajectory, nsteps, delpdb = sys.argv
@@ -11,9 +11,9 @@ except ValueError:
         dummy, pdb1, pdb2, trajectory, nsteps = sys.argv
     except ValueError:
         sys.stderr.write("Usage: TransitionPath struct1.pdb struct2.pdb " +
-                         "trajectory.nc nsteps")
+                         "trajectory.nc nsteps\n")
         sys.exit(1)
 
-nsteps = string.atoi(nsteps)
-delpdb = string.atoi(delpdb)
+nsteps = int(nsteps)
+delpdb = int(delpdb)
 run(pdb1, pdb2, trajectory, nsteps, delpdb)
