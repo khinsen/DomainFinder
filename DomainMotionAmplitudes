@@ -1,0 +1,54 @@
+#!python
+
+from DomainFinderLib.Utilities import parseRigidBodyDefinition, ParseError
+from MMTK import *
+from MMTK.Proteins import Protein
+from MMTK.PDB import PDBConfiguration
+from Scientific import N
+import sys, os
+
+if len(sys.argv) < 5:
+    sys.stderr.write("Usage: DomainMotionAmplitudes struct1.pdb struct2.pdb "
+                     "alignement_region domain_1 domain_2 ...\n")
+    raise SystemExit
+
+pdb1 = sys.argv[1]
+pdb2 = sys.argv[2]
+alignment = sys.argv[3]
+domains = sys.argv[4:]
+
+for filename in [pdb1, pdb2]:
+    if not os.path.exists(filename):
+        sys.stderr.write("The file %s does not exist.\n" % filename)
+        raise SystemExit
+
+universe = InfiniteUniverse()
+universe.protein = Protein(pdb2, model='calpha')
+final = copy(universe.configuration())
+PDBConfiguration(pdb1).applyTo(universe.protein)
+
+alignment = Collection(parseRigidBodyDefinition(alignment, universe.protein))
+tr, rms = alignment.findTransformation(final)
+universe.protein.applyTransformation(tr)
+
+for domain in domains:
+    print "Domain ", domain
+    try:
+        rb = parseRigidBodyDefinition(domain, universe.protein)
+    except ParseError, text:
+        sys.stderr.write(text+'\n')
+        raise SystemExit
+
+    if len(rb) != 1:
+        sys.stderr.write("A domain is specified by exactly one rigid body.\n")
+        continue
+    rb = rb[0]
+
+    tr, rms = rb.findTransformation(final)
+    translation = tr.translation().vector.length()/Units.Ang
+    rotation = tr.rotation().axisAndAngle()[1]/Units.deg
+    rms = rms/Units.Ang
+
+    print "Center of mass translation: ", translation, "Angstroms"
+    print "Rotation: ", rotation, "degrees"
+    print "RMS distance after superposition:", rms, "Angstroms"

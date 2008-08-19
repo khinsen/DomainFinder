@@ -100,3 +100,101 @@ scre-motion axis and an arrow. Both scripts require the molecule
 viewer VMD, which is available from http://www.ks.uiuc.edu/Research/vmd/.
 Using the rendering functions of VMD plus ray-tracing programs, very
 high quality pictures can be produced.
+
+
+Domain motion amplitude calculations
+====================================
+
+When studying a conformational transition, it is often of interest
+to know by how much a given domain moves during that transition.
+This information is given by the script DomainMotionAmplitudes.
+
+The script is used as follows (all on one command line):
+
+    DomainMotionAmplitudes struct1.pdb struct2.pdb 
+           alignment_region domain_1 domain_2 ...
+
+Any number of domain specifications can be given, the calculation is
+performed for each domain. The alignment region defines the part of
+the protein that is superposed optimally prior to the other
+calculations. The alignment region can be the whole protein, or 
+a part of it that serves as a reference.
+
+The alignment region and the domains are specified by chain and
+residue numbers. The simplest specification is a residue number (e.g.
+5) or a range of residue numbers (e.g. 2-8). By default these refer to
+chain number 1. A chain number can be given as a prefix, e.g. 2:4-45
+for residues 4 to 45 (inclusive) in chain 2. To specify a domain or an
+alignment region that consists of several chain segments, join the
+segment specifications by a plus sign (+). Note that no specification
+may contain spaces anywhere, because space are used to seperate
+specifications.
+
+An example of a more complex domain specification is
+
+   1:11-50+1:81-99+2:32-67
+
+This stands for residues 11 to 50 and 81 to 99 of chain 1 and
+residues 32 to 67 of chain 2.
+
+
+Analyzing domain motions by normal mode decomposition
+=====================================================
+
+Another useful analysis is the decomposition of the rigid-body motions
+of a given domain into the normal modes of a protein. Such an analysis
+reveals how well-defined a domain is and at what energetic cost its
+displacements are possible. The analysis is performed by the script
+RigidBodyMotionsByMode, which is used as follows:
+
+   RigidBodyMotionsByMode mode_file rb1 rb2 ...
+
+The first argument is the name of a file containing the normal modes
+of the protein, such as produced by DomainFinder or by the script
+DomainFinderModes. The remaining arguments are the specifications of
+any number of rigid-body groups. A rigid-body group can be a single
+rigid body, i.e. a domain, which is specified exactly as for the
+script DomainMotionAmplitudes (see preceding section). However, it can
+also be a group of several rigid bodies, whose definitions are separated
+by commas (again, be careful not to insert any spaces).
+
+The output of the script is a file called
+rigid_body_motions_by_mode.plot. It contains for each rigid-body group
+a list of numbers, the lists being separated by a blank line. Each
+list contains a number for each mode. This number represents the sum
+of the projections of this and all prior modes onto the direction
+vector corresponding to the rigid-body motion under study. If all
+modes of the protein are used in the analysis (i.e. if the mode file
+contains a full set of normal modes), the last number must be 1.
+The cumulative projection can be interpreted as the percentage of
+the rigid-body motion that can be described by a given number of modes.
+For a well-defined domain that participates in low-energy collective
+motions, the cumulative projection rises quickly from zero to one.
+For a region that undergoes significant internal deformation
+(i.e. which is not really rigid) or which moves only in association
+with high-energy deformations around it, the increase from zero to one
+happens slowly.
+
+
+
+Transition path calculations
+============================
+
+The script TransitionPath calculates a transition path between two
+conformations of a protein. This transition path is constructed on the
+basis of a flexibility analysis of the protein using the same elastic
+network model that DomainFinder uses. The initial conformation is
+deformed towards the final conformation taking into account the
+flexibility. The resulting transition path is thus compatible with the
+constraints imposed by the protein structure. However, it would be
+inappropriate to call it *the* transition path. Other paths are
+possible, and very probably several paths occur in real-life
+coformational changes.
+
+The script is used as follows:
+
+   TransitionPath struct1.pdb struct2.pdb trajectory.nc nsteps
+
+where struct1.pdb represents the initial configuration, struct2.pdb
+the final configuration. The resulting path has nsteps steps and is
+stored in the file trajectory.nc (an MMTK-format trajectory).

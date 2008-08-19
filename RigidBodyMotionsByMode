@@ -1,0 +1,51 @@
+#!python
+
+from DomainFinderLib.Utilities import parseRigidBodyDefinition, ParseError
+from MMTK import *
+from MMTK.Subspace import RigidMotionSubspace
+from Scientific.IO.ArrayIO import writeDataSets
+from Scientific import N
+import sys, os
+
+if len(sys.argv) < 3:
+    sys.stderr.write("Usage: RigidBodyMotionsByMode modes "
+                     "rigid_body_group_1 rigid_body_group_2 ...\n")
+    raise SystemExit
+
+modes_file = sys.argv[1]
+if not os.path.exists(modes_file):
+    sys.stderr.write("The modes file %s does not exist.\n" % modes_file)
+    raise SystemExit
+try:
+    modes = load(modes_file)
+except:
+    sys.stderr.write("%s is not a modes file created by DomainFinder.\n"
+                     % modes_file)
+    raise SystemExit
+
+universe = modes.universe
+if len(universe) > 1:
+    sys.stderr.write("%s is not a modes file created by DomainFinder.\n"
+                     % modes_file)
+    raise SystemExit
+
+protein = universe[0]
+
+try:
+    subspaces = [RigidMotionSubspace(universe,
+                                     parseRigidBodyDefinition(d, protein))
+                 for d in sys.argv[2:]]
+except ParseError, text:
+    sys.stderr.write(text+"\n")
+    raise SystemExit
+
+projections = []
+for i in range(len(modes)):
+    mode = modes.rawMode(i)
+    projections.append([s.projectionOf(mode).norm()**2/len(s)
+                        for s in subspaces])
+
+projections = N.array(projections)
+cumulative = N.add.accumulate(projections)
+
+writeDataSets(N.transpose(cumulative), 'rigid_body_motions_by_mode.plot', '\n')

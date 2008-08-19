@@ -26,9 +26,11 @@ are
        author = "Konrad Hinsen",
        author_email = "hinsen@cnrs-orleans.fr",
        url = "http://dirac.cnrs-orleans.fr/DomainFinder/",
-       license = "GPL",
+       license = "CeCILL-C",
        packages = ['DomainFinderLib'],
-       scripts = ['DomainFinder', 'DomainFinderModes', 'TransitionPath'],
+       scripts = ['DomainFinder', 'DomainFinderModes',
+                  'TransitionPath', 'RigidBodyMotionsByMode',
+                  'DomainMotionAmplitudes'],
        )
 
 
