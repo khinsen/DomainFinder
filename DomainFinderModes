@@ -5,22 +5,22 @@
 # them in the format used by DomainFinder.
 #
 # Written by Konrad Hinsen
-# Last revision: 2008-4-25
+# Last revision: 2008-8-19
 #
 
 from MMTK import *
 from MMTK.Proteins import Protein, PeptideChain
 from MMTK.PDB import PDBConfiguration
-from MMTK.ForceFields import DeformationForceField
+from MMTK.ForceFields import CalphaForceField
 from MMTK.FourierBasis import FourierBasis, countBasisVectors
-from MMTK.NormalModes import NormalModes, SparseMatrixSubspaceNormalModes
+from MMTK.NormalModes import EnergeticModes
 from Scientific import N
 import operator, os, string, sys
 
-nlimit = 600
+nlimit = 1000
 
 if len(sys.argv) < 2:
-    print "Usage: %s <PDB file> [<Mode file> [<number of modes>]]" % sys.argv[0]
+    print "Usage: %s <PDB file> [<Mode file> [<number of modes kept> [<number o f modes calculated>]]]" % sys.argv[0]
     sys.exit(0)
 
 pdbfile = sys.argv[1]
@@ -35,14 +35,14 @@ else:
 if len(sys.argv) > 3:
     nsave = int(sys.argv[3])
 else:
-    nsave = 50
+    nsave = None
 
 if len(sys.argv) > 4:
     nmodes = int(sys.argv[4])
 else:
     nmodes = None
 
-universe = InfiniteUniverse(DeformationForceField())
+universe = InfiniteUniverse(CalphaForceField(2.5))
 sequence = PDBConfiguration(pdbfile).peptide_chains
 chains = []
 for chain in sequence:
@@ -56,11 +56,11 @@ universe.protein = Protein(chains)
 
 natoms = universe.numberOfCartesianCoordinates()
 
-if natoms <= nlimit and (nmodes is None or nmodes >= nlimit):
+if nmodes is None or nmodes >= natoms:
 
     cutoff = None
     nmodes = 3*natoms
-    modes = NormalModes(universe)
+    modes = EnergeticModes(universe)
 
 else:
 
@@ -104,10 +104,10 @@ else:
     nmodes = nmodes
 
     basis = FourierBasis(universe, cutoff)
-    basis.may_modify = 1
-    modes = SparseMatrixSubspaceNormalModes(universe, basis)
+    basis.may_modify = True
+    modes = EnergeticModes(universe, subspace=basis, sparse=True)
 
-if len(modes) > nsave:
+if nsave is not None and len(modes) > nsave:
     modes.reduceToRange(0, nsave)
 
 modes.cutoff = cutoff

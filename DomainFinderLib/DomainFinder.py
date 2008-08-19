@@ -138,14 +138,13 @@ class Calculation:
 
     def calcModes(self, universe, nmodes_calc, nmodes_keep):
         self.status.set('Calculating normal modes.')
-        from MMTK.NormalModes import NormalModes, \
-             SparseMatrixSubspaceNormalModes
+        from MMTK.NormalModes import EnergeticModes
         from MMTK.FourierBasis import FourierBasis, countBasisVectors
         natoms = universe.numberOfCartesianCoordinates()
         if nmodes_calc > natoms:
             nmodes_calc = 3*natoms
         if nmodes_calc == 3*natoms:
-            modes = NormalModes(universe)
+            modes = EnergeticModes(universe)
             modes.calculated = 3*natoms
             modes.cutoff = None
         else:
@@ -168,7 +167,7 @@ class Calculation:
                 nmodes_calc = countBasisVectors(universe, cutoff)
             basis = FourierBasis(universe, cutoff)
             basis.may_modify = 1
-            modes = SparseMatrixSubspaceNormalModes(universe, basis)
+            modes = EnergeticModes(universe, subspace=basis, sparse=True)
             modes.calculated = len(modes)
             modes.cutoff = cutoff
         if nmodes_keep < nmodes_calc:

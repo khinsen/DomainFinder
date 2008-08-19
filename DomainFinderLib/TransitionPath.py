@@ -2,7 +2,7 @@ from MMTK import *
 from MMTK.PDB import PDBConfiguration
 from MMTK.Proteins import Protein
 from MMTK.ForceFields import CalphaForceField
-from MMTK.NormalModes import NormalModes, SparseMatrixSubspaceNormalModes
+from MMTK.NormalModes import EnergeticModes
 from MMTK.FourierBasis import FourierBasis, countBasisVectors
 from MMTK.Random import uniform, gaussian, randomParticleVector
 from MMTK.Trajectory import Trajectory, SnapshotGenerator, TrajectoryOutput
@@ -87,7 +87,7 @@ class TransitionPathStep:
         if nmodes > natoms:
             nmodes = 3*natoms
         if nmodes == 3*natoms:
-            modes = NormalModes(self.universe, None)
+            modes = EnergeticModes(self.universe, None)
             modes.cutoff = None
         else:
             p1, p2 = self.universe.boundingBox()
@@ -109,7 +109,8 @@ class TransitionPathStep:
                 nmodes = countBasisVectors(self.universe, cutoff)
             basis = FourierBasis(self.universe, cutoff)
             basis.may_modify = 1
-            modes = SparseMatrixSubspaceNormalModes(self.universe, basis, None)
+            modes = EnergeticModes(self.universe, None,
+                                   subspace=basis, sparse=True)
             modes.cutoff = cutoff
         self.modes = modes
 
