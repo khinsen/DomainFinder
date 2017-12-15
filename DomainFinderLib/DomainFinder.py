@@ -1042,8 +1042,6 @@ class GUI(Frame):
             raise GUIError
         if self.mode.get() == 'modes':
             mode_selection = self.modelist.curselection()
-            try: mode_selection = map(string.atoi, mode_selection)
-            except ValueError: pass
             if not mode_selection:
                 Dialog.Dialog(self, title='No modes selected',
                               text='Please select at least one mode.',
